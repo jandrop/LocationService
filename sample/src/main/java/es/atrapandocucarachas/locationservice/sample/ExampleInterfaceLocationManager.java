@@ -18,7 +18,7 @@ public class ExampleInterfaceLocationManager extends AppCompatActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.example_activity);
 
         initiUi();
         manager = new LocationManager(this);
@@ -42,7 +42,7 @@ public class ExampleInterfaceLocationManager extends AppCompatActivity implement
     }
 
     public void stopLocation(View view) {
-        manager.startLocationUpdates();
+        manager.stopLocationUpdates();
     }
 
     @Override

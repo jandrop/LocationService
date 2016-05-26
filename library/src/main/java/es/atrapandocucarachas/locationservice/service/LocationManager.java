@@ -1,5 +1,13 @@
 package es.atrapandocucarachas.locationservice.service;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
+
+import static es.atrapandocucarachas.locationservice.service.LocationService.EXTRA_LOCATION;
+
 /**
  * @author Alejandro Platas Mallo
  * @version X.XX
@@ -7,4 +15,55 @@ package es.atrapandocucarachas.locationservice.service;
  */
 
 public class LocationManager {
+
+    private final String MAIN_INTENT_FILTER = "android.intent.action.MAIN";
+    private Context mContext;
+    private Intent mService;
+    private BroadcastReceiver mReceiver;
+    private LocationIF mLocationListener;
+
+    public LocationManager(Context mContext) {
+        this.mContext = mContext;
+        mService = new Intent(mContext, LocationService.class);
+        IntentFilter intentFilter = new IntentFilter(MAIN_INTENT_FILTER);
+        createReceiver();
+        mContext.registerReceiver(mReceiver, intentFilter);
+    }
+
+    public void startLocationUpdates() {
+        mContext.startService(mService);
+    }
+
+    public void stopLocationUpdates() {
+        mContext.stopService(mService);
+    }
+
+    private void createReceiver() {
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Location location = intent.getParcelableExtra(EXTRA_LOCATION);
+                if(mLocationListener!=null){
+                    mLocationListener.onLocationChange(location);
+                }
+            }
+        };
+    }
+
+    /**
+     * Do this into onPause();
+     */
+    public void destroyReceiver() {
+        mContext.unregisterReceiver(mReceiver);
+    }
+
+    public interface LocationIF {
+        void onLocationChange(Location location);
+    }
+
+    public void registerLocationListener(LocationIF mLocationListener){
+        this.mLocationListener = mLocationListener;
+    }
+
+
 }

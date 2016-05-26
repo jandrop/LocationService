@@ -10,7 +10,6 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -22,14 +21,14 @@ public class LocationService extends Service
         implements LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    public final static String EXTRA_LOCATION = "location";
     private final static String LOG_TAG = LocationService.class.getSimpleName();
-
     private GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i(LOG_TAG, "Service Started");
+        //Log.i(LOG_TAG, "Service Started");
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -48,7 +47,7 @@ public class LocationService extends Service
     public void onDestroy() {
         super.onDestroy();
         stopLocationUpdates();
-        Log.i(LOG_TAG, "Servicio Parado");
+        //Log.i(LOG_TAG, "Service stopped");
     }
 
     @Override
@@ -59,7 +58,7 @@ public class LocationService extends Service
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (mGoogleApiClient.isConnected()) {
-            Log.i(LOG_TAG, "mGoogleApiClient: connected.");
+            //Log.i(LOG_TAG, "mGoogleApiClient: Connected.");
             startLocationUpdates();
         }
     }
@@ -98,9 +97,13 @@ public class LocationService extends Service
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i(LOG_TAG, location.toString());
+        //Log.i(LOG_TAG, location.toString());
         Intent i = new Intent("android.intent.action.MAIN");
-        i.putExtra("location", location);
+        i.putExtra(EXTRA_LOCATION, location);
         sendBroadcast(i);
+    }
+
+    public interface LocationIF {
+        void onLocationChange(Location location);
     }
 }

@@ -23,7 +23,7 @@ Add the library dependency to your build.gradle file.
 ```groovy
 dependencies {
     ...
-    compile 'com.github.jandrop:jandrop:LocationService:1.0'
+    compile 'com.github.jandrop:LocationService:1.0'
 }
 ```
 ### 3.- Example of use:

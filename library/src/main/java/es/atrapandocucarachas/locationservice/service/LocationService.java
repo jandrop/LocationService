@@ -76,7 +76,7 @@ public class LocationService extends Service
         builder = new NotificationCompat.Builder(this)
                 .setContentTitle(message)
                 .setContentText(getString(R.string.latitude_longitude, lat, lng))
-                .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setSmallIcon(R.drawable.ic_place_black_24dp)
                 .setContentIntent(contentIntent)
                 .setOngoing(true);
 

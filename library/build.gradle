@@ -15,8 +15,6 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.jandrop'
 
 android {
     compileSdkVersion 23

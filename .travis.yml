@@ -15,4 +15,4 @@ android:
     - extra-google-m2repository
 
 script:
-    - ./gradlew build"
+    - "./gradlew build"

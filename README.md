@@ -1,8 +1,6 @@
 Location Service Sample
 ===================================
 
-[![Release](https://jitpack.io/v/User/Repo.svg)](https://jitpack.io/#jandrop/LocationService)
-
 ## How to use
 
 ### 1.- Gradle Dependency

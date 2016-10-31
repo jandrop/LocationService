@@ -26,10 +26,9 @@ import static es.atrapandocucarachas.locationservice.service.LocationService.EXT
 
 /**
  * @author Alejandro Platas Mallo
- * @version X.XX
+ * @version 1.00
  * @since 26/5/16
  */
-
 public class LocationManager {
 
     private final String MAIN_INTENT_FILTER = "android.intent.action.MAIN";

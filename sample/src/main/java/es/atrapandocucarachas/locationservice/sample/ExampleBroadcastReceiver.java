@@ -44,7 +44,7 @@ public class ExampleBroadcastReceiver extends AppCompatActivity {
         setContentView(R.layout.example_activity);
 
         mService = new Intent(this, LocationService.class);
-        initiUi();
+        initUi();
 
         IntentFilter intentFilter = new IntentFilter("android.intent.action.MAIN");
 
@@ -68,7 +68,7 @@ public class ExampleBroadcastReceiver extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
-    private void initiUi(){
+    private void initUi(){
         locationText = (TextView) findViewById(R.id.locationText);
     }
 

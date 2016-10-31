@@ -16,6 +16,12 @@
 
 package es.atrapandocucarachas.locationservice.service;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -31,130 +37,129 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-
 import es.atrapandocucarachas.locationservice.R;
 
+/**
+ * @author Alejandro Platas Mallo
+ * @version 1.00
+ * @since 26/5/16
+ */
 public class LocationService extends Service
-        implements LocationListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+		implements LocationListener, GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener {
 
-    //private final static String LOG_TAG = LocationService.class.getSimpleName();
-    public final static String EXTRA_LOCATION = "location";
-    private GoogleApiClient mGoogleApiClient;
-    private NotificationManager mNotificationManager;
-    private NotificationCompat.Builder builder;
-    private int notifyID = 1;
-    private double lat, lng;
+	//private final static String LOG_TAG = LocationService.class.getSimpleName();
+	public final static String EXTRA_LOCATION = "location";
+	private GoogleApiClient mGoogleApiClient;
+	private NotificationManager mNotificationManager;
+	private NotificationCompat.Builder builder;
+	private int notifyID = 1;
+	private double lat, lng;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        //Log.i(LOG_TAG, "Service Started");
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		//Log.i(LOG_TAG, "Service Started");
 
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        displayNotificationMessage(getString(R.string.notification_message));
+		mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		displayNotificationMessage(getString(R.string.notification_message));
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
+		mGoogleApiClient = new GoogleApiClient.Builder(this)
+				.addConnectionCallbacks(this)
+				.addOnConnectionFailedListener(this)
+				.addApi(LocationServices.API)
+				.build();
+		mGoogleApiClient.connect();
+	}
 
-    private void displayNotificationMessage(String message) {
-        String packageName = getPackageName();
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+	private void displayNotificationMessage(String message) {
+		String packageName = getPackageName();
+		Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, launchIntent, 0);
 
-        builder = new NotificationCompat.Builder(this)
-                .setContentTitle(message)
-                .setContentText(getString(R.string.latitude_longitude, lat, lng))
-                .setSmallIcon(R.drawable.ic_place_black_24dp)
-                .setContentIntent(contentIntent)
-                .setOngoing(true);
+		builder = new NotificationCompat.Builder(this)
+				.setContentTitle(message)
+				.setContentText(getString(R.string.latitude_longitude, lat, lng))
+				.setSmallIcon(R.drawable.ic_place_black_24dp)
+				.setContentIntent(contentIntent)
+				.setOngoing(true);
 
-        mNotificationManager.notify(notifyID, builder.build());
-    }
+		mNotificationManager.notify(notifyID, builder.build());
+	}
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		return super.onStartCommand(intent, flags, startId);
+	}
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stopLocationUpdates();
-    }
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		stopLocationUpdates();
+	}
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+	@Override
+	public IBinder onBind(Intent intent) {
+		return null;
+	}
 
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        mNotificationManager.cancel(notifyID);
-    }
+	protected void stopLocationUpdates() {
+		LocationServices.FusedLocationApi.removeLocationUpdates(
+				mGoogleApiClient, this);
+		mNotificationManager.cancel(notifyID);
+	}
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
-    }
+	@Override
+	public void onConnected(@Nullable Bundle bundle) {
+		if (mGoogleApiClient.isConnected()) {
+			startLocationUpdates();
+		}
+	}
 
-    @Override
-    public void onConnectionSuspended(int i) {
+	@Override
+	public void onConnectionSuspended(int i) {
 
-    }
+	}
 
-    protected void startLocationUpdates() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+	protected void startLocationUpdates() {
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED
+				&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) {
+			return;
+		}
 
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, createLocationRequest(), this);
-    }
+		LocationServices.FusedLocationApi.requestLocationUpdates(
+				mGoogleApiClient, createLocationRequest(), this);
+	}
 
-    protected LocationRequest createLocationRequest() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return mLocationRequest;
-    }
+	protected LocationRequest createLocationRequest() {
+		LocationRequest mLocationRequest = new LocationRequest();
+		mLocationRequest.setInterval(10000);
+		mLocationRequest.setFastestInterval(5000);
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		return mLocationRequest;
+	}
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+	@Override
+	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
+	}
 
-    @Override
-    public void onLocationChanged(Location location) {
-        lat = location.getLatitude();
-        lng = location.getLongitude();
+	@Override
+	public void onLocationChanged(Location location) {
+		lat = location.getLatitude();
+		lng = location.getLongitude();
 
-        builder.setContentText(getString(R.string.latitude_longitude, lat, lng));
-        mNotificationManager.notify(
-                notifyID,
-                builder.build()
-        );
+		builder.setContentText(getString(R.string.latitude_longitude, lat, lng));
+		mNotificationManager.notify(
+				notifyID,
+				builder.build()
+		);
 
-        Intent i = new Intent("android.intent.action.MAIN");
-        i.putExtra(EXTRA_LOCATION, location);
-        sendBroadcast(i);
-    }
+		Intent i = new Intent("android.intent.action.MAIN");
+		i.putExtra(EXTRA_LOCATION, location);
+		sendBroadcast(i);
+	}
 }

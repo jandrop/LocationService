@@ -16,6 +16,6 @@
 
 <resources>
     <string name="app_name">Library</string>
-    <string name="latitude_longitude">%1$.8f,%2$.8f</string>
+    <string name="latitude_longitude">%1$.8f , %2$.8f</string>
     <string name="notification_message">Location service is running</string>
 </resources>

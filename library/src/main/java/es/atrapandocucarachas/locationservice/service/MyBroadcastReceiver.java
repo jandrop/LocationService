@@ -23,10 +23,9 @@ import android.content.Intent;
 
 /**
  * @author Alejandro Platas Mallo
- * @version X.XX
+ * @version 1.00
  * @since 13/5/16
  */
-
 public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
